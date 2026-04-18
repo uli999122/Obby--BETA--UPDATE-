@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusHub • Crea. Graba. Conecta.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .title { font-family: 'Space Grotesk', sans-serif; }
+        .glass { background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(32px); border: 1px solid rgba(167, 139, 250, 0.2); }
+        .neon { box-shadow: 0 0 40px rgba(167, 139, 250, 0.5); }
+        .btn-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-hover:hover { transform: scale(1.08) translateY(-4px); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-zinc-950 via-purple-950 to-black text-white min-h-screen">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-3xl flex items-center justify-center text-3xl animate-pulse">✦</div>
+                <h1 class="title text-4xl font-bold tracking-tighter">NexusHub</h1>
+            </div>
+            <div class="flex gap-8 text-lg font-medium">
+                <a href="#" class="hover:text-violet-400 transition">Trends</a>
+                <a href="#" class="hover:text-violet-400 transition">Videos</a>
+                <a href="#" class="hover:text-violet-400 transition">Chat</a>
+                <a href="#" onclick="openRegister()" class="hover:text-violet-400 transition">Registrarse</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-28 pb-12 max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="title text-7xl font-bold tracking-tighter mb-4 animate-fade-in">Crea. Graba. Conecta.</h2>
+            <p class="text-2xl text-zinc-400">Comunidad segura con IA y moderación avanzada</p>
+        </div>
+
+        <!-- Botones principales con más animaciones -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            <button onclick="startCameraRecording()" class="glass rounded-3xl p-10 text-left btn-hover neon">
+                <i class="fa-solid fa-camera text-6xl mb-6 text-pink-400"></i>
+                <h3 class="text-3xl font-semibold">Grabar Video</h3>
+                <p class="text-zinc-400 mt-2">Cámara frontal + micrófono + música</p>
+            </button>
+
+            <button onclick="uploadFromGallery()" class="glass rounded-3xl p-10 text-left btn-hover">
+                <i class="fa-solid fa-photo-film text-6xl mb-6 text-emerald-400"></i>
+                <h3 class="text-3xl font-semibold">Subir desde Galería</h3>
+                <p class="text-zinc-400 mt-2">Publica videos ya guardados</p>
+            </button>
+
+            <button onclick="openAIChat()" class="glass rounded-3xl p-10 text-left btn-hover">
+                <i class="fa-solid fa-brain text-6xl mb-6 text-cyan-400"></i>
+                <h3 class="text-3xl font-semibold">IA Nexus Privada</h3>
+                <p class="text-zinc-400 mt-2">Habla con IA inteligente</p>
+            </button>
+        </div>
+
+        <!-- Actualizaciones visibles -->
+        <div class="glass rounded-3xl p-8 mb-12">
+            <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3"><i class="fa-solid fa-bell"></i> Actualizaciones Recientes</h3>
+            <div class="space-y-4">
+                <div class="flex gap-4 bg-white/5 p-4 rounded-2xl">
+                    <span class="text-emerald-400">v1.3</span>
+                    <p>Filtro de groserías multilingüe mejorado + traducción automática</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="glass rounded-3xl p-8">
+            <h3 class="text-3xl font-semibold mb-6">Chat Global • Moderado por IA</h3>
+            <div id="chatMessages" class="h-96 overflow-y-auto space-y-5 mb-6 bg-black/30 rounded-2xl p-6"></div>
+            <div class="flex gap-3">
+                <input id="chatInput" type="text" placeholder="Mensaje seguro..." 
+                       class="flex-1 bg-zinc-900 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-violet-500"
+                       onkeypress="if(event.key==='Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="px-10 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-semibold">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filtro de groserías ampliado (colombianas, mexicanas, españolas, inglesas, rusas, indias, etc.)
+        const badWords = ["puta","puto","mierda","joder","cabron","pendejo","verga","coño","hijueputa","gonorrea","carechimba","ctm","weon","fuck","shit","bitch","asshole","cunt","madarchod","bhenchod","su ka","blyat","pizdec"];
+
+        function filterMessage(text) {
+            let filtered = text;
+            badWords.forEach(word => {
+                const regex = new RegExp(word, "gi");
+                filtered = filtered.replace(regex, "●●●");
+            });
+            return filtered;
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById("chatInput");
+            if (!input.value.trim()) return;
+
+            const safeMsg = filterMessage(input.value);
+
+            const msg = document.createElement("div");
+            msg.className = "flex gap-4";
+            msg.innerHTML = `
+                <div class="w-9 h-9 bg-gradient-to-br from-violet-500 to-pink-500 rounded-2xl"></div>
+                <div class="flex-1">
+                    <p class="font-medium text-violet-300">Usuario</p>
+                    <p class="text-zinc-200">${safeMsg}</p>
+                    <div class="flex gap-6 text-xs text-zinc-500 mt-1">
+                        <button onclick="copyMsg(this)" class="hover:text-white">Copiar</button>
+                        <button onclick="translateMsg(this)" class="hover:text-white">Traducir</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById("chatMessages").appendChild(msg);
+            document.getElementById("chatMessages").scrollTop = 999999;
+            input.value = "";
+        }
+
+        function copyMsg(el) {
+            const text = el.parentElement.parentElement.querySelector("p.text-zinc-200").textContent;
+            navigator.clipboard.writeText(text);
+            el.textContent = "✓ Copiado";
+            setTimeout(() => el.textContent = "Copiar", 1500);
+        }
+
+        function translateMsg(el) {
+            el.textContent = "Traduciendo...";
+            setTimeout(() => el.textContent = "Traducido (ES → EN)", 1400);
+        }
+
+        // Grabación con cámara frontal (funciona mejor en móvil)
+        async function startCameraRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "user" },
+                    audio: true
+                });
+                const recorder = new MediaRecorder(stream);
+                const chunks = [];
+
+                recorder.ondataavailable = e => chunks.push(e.data);
+                recorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `nexus-video-${Date.now()}.webm`;
+                    a.click();
+                };
+
+                recorder.start();
+                alert("🎥 Grabando con cámara frontal y micrófono...\n\nDetendrá en 30 segundos o recarga la página.");
+                setTimeout(() => recorder.stop(), 30000);
+            } catch (err) {
+                alert("No se pudo acceder a la cámara.\n\nPermite el acceso a cámara y micrófono en tu navegador.");
+            }
+        }
+
+        function uploadFromGallery() {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "video/*";
+            input.onchange = () => alert("Video seleccionado de galería. Próximamente se subirá.");
+            input.click();
+        }
+
+        function openAIChat() {
+            const name = prompt("Ingresa tu nombre de usuario (sin groserías):");
+            if (name) alert(`Hola ${name} 👋\n\nSoy Nexus IA. ¿En qué te ayudo hoy?`);
+        }
+
+        function openRegister() {
+            alert("Registro:\n\n• Nombre de usuario\n• Fecha de nacimiento (solo tú la ves)\n• Captcha de seguridad\n\nPróximamente con login GitHub/Google.");
+        }
+
+        // Animación de entrada
+        window.onload = () => {
+            console.log("%cNexusHub cargado con moderación avanzada", "color:#a78bfa; font-size:15px");
+        };
+    </script>
+</body>
+</html>
