@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusHub • Comunidad Libre & Creativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.1); }
+        .glow { box-shadow: 0 0 40px rgba(167, 139, 250, 0.5); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-zinc-950 via-purple-950 to-black text-white min-h-screen">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-3xl flex items-center justify-center text-3xl">✦</div>
+                <h1 class="text-4xl font-bold tracking-tighter">NexusHub</h1>
+            </div>
+            <div class="flex gap-10 text-lg font-medium">
+                <a href="#" class="hover:text-violet-400 transition">Trends</a>
+                <a href="#" class="hover:text-violet-400 transition">Videos</a>
+                <a href="#" class="hover:text-violet-400 transition">Chat</a>
+                <a href="#" class="hover:text-violet-400 transition">IA Nexus</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-28 pb-12 max-w-7xl mx-auto px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-7xl font-bold tracking-tighter mb-6">El lugar donde todo fluye</h2>
+            <p class="text-2xl text-zinc-400">Publica • Graba • Chatea • Crea con IA</p>
+        </div>
+
+        <!-- Botones principales -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <button onclick="createTrend()" class="glass rounded-3xl p-8 text-left card-hover glow">
+                <i class="fa-solid fa-fire text-5xl mb-6 text-orange-400"></i>
+                <h3 class="text-2xl font-semibold">Hacer Trend</h3>
+                <p class="text-zinc-400 mt-2">Crea publicaciones virales con hashtags</p>
+            </button>
+
+            <button onclick="uploadVideo()" class="glass rounded-3xl p-8 text-left card-hover glow">
+                <i class="fa-solid fa-video text-5xl mb-6 text-red-400"></i>
+                <h3 class="text-2xl font-semibold">Subir Video</h3>
+                <p class="text-zinc-400 mt-2">Videos con música de fondo</p>
+            </button>
+
+            <button onclick="startRecording()" class="glass rounded-3xl p-8 text-left card-hover glow">
+                <i class="fa-solid fa-record-vinyl text-5xl mb-6 text-pink-400"></i>
+                <h3 class="text-2xl font-semibold">Grabar con Música</h3>
+                <p class="text-zinc-400 mt-2">Pantalla + Mic + Música</p>
+            </button>
+
+            <button onclick="openAIChat()" class="glass rounded-3xl p-8 text-left card-hover glow">
+                <i class="fa-solid fa-brain text-5xl mb-6 text-cyan-400"></i>
+                <h3 class="text-2xl font-semibold">IA Nexus</h3>
+                <p class="text-zinc-400 mt-2">IA inteligente que aprende de ti</p>
+            </button>
+        </div>
+
+        <!-- Chat -->
+        <div class="mt-16 glass rounded-3xl p-8">
+            <h3 class="text-3xl font-semibold mb-6 flex items-center gap-4">
+                <i class="fa-solid fa-comments"></i> Chat Global <span class="text-xs bg-green-500/20 text-green-400 px-3 py-1 rounded-full">Moderado</span>
+            </h3>
+            <div id="chat" class="h-96 overflow-y-auto bg-black/40 rounded-2xl p-6 mb-6 space-y-4 text-sm"></div>
+            <div class="flex gap-4">
+                <input id="msgInput" type="text" placeholder="Escribe algo..." 
+                       class="flex-1 bg-zinc-900 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-violet-500">
+                <button onclick="sendChatMessage()" class="px-10 bg-violet-600 hover:bg-violet-500 rounded-2xl font-medium">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filtro de groserías simple pero efectivo
+        const badWords = ["puta", "puto", "mierda", "joder", "cabron", "pendejo", "verga", "coño", "gilipollas"];
+        function filterMessage(text) {
+            let filtered = text;
+            badWords.forEach(word => {
+                const regex = new RegExp(word, "gi");
+                filtered = filtered.replace(regex, "###");
+            });
+            return filtered;
+        }
+
+        // Enviar mensaje al chat con filtro
+        function sendChatMessage() {
+            const input = document.getElementById("msgInput");
+            if (!input.value.trim()) return;
+            
+            const filtered = filterMessage(input.value);
+            
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "flex gap-4";
+            msgDiv.innerHTML = `
+                <div class="w-9 h-9 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex-shrink-0"></div>
+                <div>
+                    <p class="font-medium text-violet-300">Tú</p>
+                    <p class="text-zinc-200">${filtered}</p>
+                </div>
+            `;
+            document.getElementById("chat").appendChild(msgDiv);
+            document.getElementById("chat").scrollTop = 999999;
+            input.value = "";
+        }
+
+        // Botones de acciones (puedes expandir)
+        function createTrend() { alert("¡Trend creado! (Próximamente subirás imagen + hashtags)"); }
+        function uploadVideo() { alert("Sube tu video con música (próximamente con editor)"); }
+        function startRecording() { alert("Grabando pantalla + mic + música... (usa MediaRecorder API)"); }
+        function openAIChat() { alert("IA Nexus abierta - Habla con la IA inteligente que aprende de ti"); }
+    </script>
+</body>
+</html>
