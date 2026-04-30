@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Guía de Economía · Obby T2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #05070c;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            color: #eef2ff;
+        }
+
+        /* Pantalla de carga 3D */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000dd;
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .game-preview {
+            width: 280px;
+            height: 280px;
+            border-radius: 2rem;
+            background: linear-gradient(145deg, #1a1f2e, #0a0d16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5), 0 0 0 2px #ffcd4a40;
+            animation: float 3s infinite ease;
+        }
+
+        .game-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 1.8rem;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #2a2f3f;
+            border-top: 4px solid #ffcd4a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fff, #ffcd4a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #ffcd4a20;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Conversor */
+        .conversor-card {
+            background: #0f131e;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            margin: 1.5rem auto;
+            max-width: 650px;
+            border: 1px solid #2a2f3f;
+            text-align: center;
+        }
+
+        .diamond-icon, .coin-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1a1f2e;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            font-weight: bold;
+        }
+
+        .diamond-icon img, .coin-icon img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .ratio-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 1.3rem;
+        }
+
+        .arrow {
+            font-size: 1.8rem;
+            color: #ffcd4a;
+        }
+
+        /* Buscador */
+        .search-box {
+            max-width: 450px;
+            margin: 1.5rem auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            background: #0f131c;
+            border: 1px solid #2c3246;
+            border-radius: 60px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Grid de tarjetas (solo 2 objetos) */
+        .items-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: #0f131e;
+            border-radius: 2rem;
+            width: 320px;
+            overflow: hidden;
+            border: 1px solid #262c40;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #ffcd4a;
+        }
+
+        .card-image {
+            height: 200px;
+            background: #070b12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-image img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .item-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .rarity {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: #1e2538;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+
+        .value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0.8rem 0;
+        }
+
+        .obtain {
+            background: #0a0d16;
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: #b9c3db;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.7rem;
+            color: #3f455e;
+        }
+
+        @media (max-width: 700px) {
+            .card { width: 280px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Pantalla de carga 3D con imagen del juego -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="game-preview">
+        <img src="https://tr.rbxcdn.com/180DAY-5f0ed2bcd479eaa06d3289819ffb78cb/256/256/Image/Webp/noFilter" alt="Obby T2 Preview" onerror="this.src='https://via.placeholder.com/256x256?text=OBBY+T2'">
+    </div>
+    <div class="loader"></div>
+    <p style="color:#ffcd4a;">Cargando economía de Obby...</p>
+</div>
+
+<div class="container" id="mainContent" style="display: none;">
+    <div class="header">
+        <h1>✦ GUÍA OFICIAL DE ECONOMÍA ✦</h1>
+        <div class="badge">🏆 TEMPORADA 2 · OBBY [BETA]</div>
+    </div>
+
+    <!-- Conversor de esfuerzo -->
+    <div class="conversor-card">
+        <div class="ratio-line">
+            <div class="diamond-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/1824/1824891.png" alt="diamante" onerror="this.src='https://emojiisland.com/cdn/shop/products/10_1.png?v=1571606107'">
+                <span>1 DIAMANTE</span>
+            </div>
+            <div class="arrow">➡️</div>
+            <div class="coin-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/2331/2331966.png" alt="moneda" onerror="this.src='https://cdn-icons-png.flaticon.com/512/196/196605.png'">
+                <span>8,900 MONEDAS</span>
+            </div>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">💎 <strong>Los Diamantes son muy valiosos</strong> (equivalen a 8.900 monedas de esfuerzo)<br>🪙 Las Monedas son fáciles de recolectar → valor bajo</p>
+    </div>
+
+    <!-- Buscador -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Buscar: 'diamante', 'moneda'...">
+    </div>
+
+    <!-- Catálogo de solo 2 ítems reales -->
+    <div id="itemsGrid" class="items-grid"></div>
+    <footer>⚡ Valores basados en el esfuerzo real del juego · Solo existen Diamante y Moneda</footer>
+</div>
+
+<script>
+    // ======================
+    // SOLO DOS ÍTEMS REALES
+    // ======================
+    const realItems = [
+        {
+            name: "DIAMANTE",
+            rarity: "Legendario",
+            currency: "diamond",
+            value: 8900,
+            obtain: "🎯 Eventos especiales · Logros difíciles · Pases de temporada",
+            icon: "https://cdn-icons-png.flaticon.com/512/1824/1824891.png"
+        },
+        {
+            name: "MONEDA",
+            rarity: "Común",
+            currency: "coin",
+            value: 1,
+            obtain: "🕹️ Cada nivel completado · Recolectables en mapa · Recompensas diarias",
+            icon: "https://cdn-icons-png.flaticon.com/512/2331/2331966.png"
+        }
+    ];
+
+    // Ocultar pantalla de carga después de 2 segundos (simula carga 3D)
+    setTimeout(() => {
+        const loading = document.getElementById('loadingScreen');
+        const main = document.getElementById('mainContent');
+        if (loading && main) {
+            loading.classList.add('hide');
+            setTimeout(() => {
+                loading.style.display = 'none';
+                main.style.display = 'block';
+            }, 800);
+        }
+    }, 2000);
+
+    // Renderizar los dos objetos (con buscador)
+    function renderItems(searchTerm = "") {
+        const grid = document.getElementById("itemsGrid");
+        if (!grid) return;
+
+        let filtered = realItems.filter(item => 
+            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.rarity.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#8b92b0;">❌ No se encontró "${searchTerm}" · Solo existen Diamante y Moneda</div>`;
+            return;
+        }
+
+        let html = "";
+        filtered.forEach(item => {
+            const isDiamond = item.currency === "diamond";
+            const valueDisplay = isDiamond 
+                ? `💎 ${item.value.toLocaleString()} PTS · 1 Diamante`
+                : `🪙 ${item.value} PTS · 1 Moneda`;
+
+            html += `
+                <div class="card">
+                    <div class="card-image">
+                        <img src="${item.icon}" alt="${item.name}" onerror="this.src='https://emojiisland.com/cdn/shop/products/${isDiamond ? '10_1.png?v=1571606107' : '196605.png'}'">
+                    </div>
+                    <div class="card-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="rarity">${item.rarity}</div>
+                        <div class="value">${valueDisplay}</div>
+                        <div class="obtain">📦 ${item.obtain}</div>
+                    </div>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+    }
+
+    // Buscador en vivo
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            renderItems(e.target.value);
+        });
+    }
+
+    // Render inicial
+    renderItems("");
+</script>
+</body>
+</html>
