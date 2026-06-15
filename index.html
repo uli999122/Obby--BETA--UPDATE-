@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pivot Agent · Asistente IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0B1120 0%, #111827 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        /* ventana principal */
+        .chat-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(18, 25, 45, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(72, 187, 255, 0.15);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* cabecera con brillo */
+        .chat-header {
+            padding: 1.25rem 1.8rem;
+            background: rgba(10, 15, 27, 0.7);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .agent-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #38BDF8, #3B82F6);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+        }
+
+        .title-text h2 {
+            color: white;
+            font-weight: 600;
+            font-size: 1.3rem;
+            letter-spacing: -0.3px;
+        }
+
+        .title-text p {
+            color: #94A3B8;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            background: #05966920;
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #34D399;
+            border: 1px solid #34D39940;
+        }
+
+        /* area de mensajes */
+        .messages-area {
+            height: 460px;
+            overflow-y: auto;
+            padding: 1.5rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            scroll-behavior: smooth;
+        }
+
+        /* mensajes */
+        .message {
+            display: flex;
+            gap: 0.7rem;
+            max-width: 85%;
+            animation: fadeSlideUp 0.2s ease-out;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            background: #1E293B;
+            padding: 0.8rem 1.2rem;
+            border-radius: 1.8rem;
+            color: #E2E8F0;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 1px solid #334155;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(115deg, #2563EB, #1E40AF);
+            color: white;
+            border: none;
+            border-bottom-right-radius: 0.6rem;
+        }
+
+        .message.ai .message-bubble {
+            border-bottom-left-radius: 0.6rem;
+            background: #0F172A;
+        }
+
+        .avatar-icon {
+            width: 32px;
+            height: 32px;
+            background: #1E293B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .user .avatar-icon {
+            background: #3B82F6;
+        }
+
+        /* input elegante */
+        .input-area {
+            padding: 1.2rem 1.5rem 1.5rem;
+            background: rgba(5, 10, 22, 0.6);
+            border-top: 1px solid #1E293B;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.8rem;
+            background: #0F172A;
+            border-radius: 3rem;
+            padding: 0.2rem 0.2rem 0.2rem 1.2rem;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #38BDF8;
+            box-shadow: 0 0 0 3px #38BDF820;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.8rem 0;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #5B6E8C;
+        }
+
+        .send-btn {
+            background: #2563EB;
+            border: none;
+            border-radius: 2rem;
+            padding: 0 1.2rem;
+            font-weight: 600;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .send-btn:hover {
+            background: #3B82F6;
+            transform: scale(0.97);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 0.6rem 1rem;
+            background: #0F172A;
+            width: fit-content;
+            border-radius: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #94A3B8;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.2s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* scroll personalizado */
+        .messages-area::-webkit-scrollbar {
+            width: 5px;
+        }
+        .messages-area::-webkit-scrollbar-track {
+            background: #0F172A;
+            border-radius: 10px;
+        }
+        .messages-area::-webkit-scrollbar-thumb {
+            background: #3B82F6;
+            border-radius: 10px;
+        }
+
+        footer {
+            font-size: 0.65rem;
+            text-align: center;
+            padding: 0.8rem;
+            color: #4B5563;
+            background: #03071250;
+        }
+
+        @media (max-width: 550px) {
+            .message { max-width: 95%; }
+            .chat-container { border-radius: 1.5rem; }
+            .messages-area { height: 420px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="title-section">
+            <div class="agent-avatar">🧠</div>
+            <div class="title-text">
+                <h2>Pivot Agent · Nano 4.0</h2>
+                <p>IA de próxima generación</p>
+            </div>
+        </div>
+        <div class="status-badge">🔑 API Key activa</div>
+    </div>
+
+    <div class="messages-area" id="messagesContainer">
+        <div class="message ai">
+            <div class="avatar-icon">🤖</div>
+            <div class="message-bubble">
+                Hola 👋 Soy el agente <strong>PivotNano 4.0</strong>. Pregúntame lo que quieras, desde tecnología hasta consejos creativos. ¡Empecemos!
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div class="input-wrapper">
+            <input type="text" id="messageInput" placeholder="Escribe tu mensaje...  ✨" autocomplete="off">
+            <button class="send-btn" id="sendBtn">
+                <span>Enviar</span> 
+                <span style="font-size:1.1rem;">→</span>
+            </button>
+        </div>
+        <footer>🔐 API key integrada • respuestas rápidas del agente</footer>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    //  API KEY YA INCLUIDA (sin preguntar, sólo usada en peticiones)
+    // --------------------------------------------------------------
+    const API_KEY = "pivot_1781495746797_dxw64py1";
+    const AGENT_ID = "pivotnano_4.0_mini_official";   // ID oficial
+    
+    const API_CHAT_URL = "https://pivot-agent-psi.vercel.app/api/developer/chat";
+    
+    // Elementos del DOM
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    
+    // Historial de conversación (formato simple para contexto)
+    let conversationHistory = []; 
+    
+    // Agregar mensaje al chat visualmente y al historial (rol: 'user' o 'assistant')
+    function addMessageToUI(role, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role === 'user' ? 'user' : 'ai'}`;
+        
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'avatar-icon';
+        avatarDiv.innerText = role === 'user' ? '👤' : '🤖';
+        
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        bubbleDiv.innerText = content;
+        
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(bubbleDiv);
+        
+        messagesContainer.appendChild(messageDiv);
+        // scroll suave
+        messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        
+        // también guardar en el historial (pero sin duplicar system)
+        if (role === 'user' || role === 'assistant') {
+            conversationHistory.push({ role: role === 'user' ? 'user' : 'assistant', content: content });
+            // mantener histórico razonable (últimos 10 turnos)
+            if (conversationHistory.length > 20) conversationHistory.shift();
+        }
+    }
+    
+    // indicador "escribiendo..."
+    let typingIndicatorDiv = null;
+    function showTyping() {
+        if (typingIndicatorDiv) return;
+        typingIndicatorDiv = document.createElement('div');
+        typingIndicatorDiv.className = 'typing-indicator';
+        typingIndicatorDiv.innerHTML = '<span></span><span></span><span></span>';
+        typingIndicatorDiv.style.marginLeft = '52px';
+        messagesContainer.appendChild(typingIndicatorDiv);
+        typingIndicatorDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+    
+    function hideTyping() {
+        if (typingIndicatorDiv) {
+            typingIndicatorDiv.remove();
+            typingIndicatorDiv = null;
+        }
+    }
+    
+    // función principal para enviar mensaje al agente (usa API Key directamente)
+    async function sendMessageToAgent(userMessage) {
+        if (!userMessage.trim()) return;
+        
+        // 1. Mostrar mensaje del usuario en UI y guardar en historial
+        addMessageToUI('user', userMessage);
+        messageInput.value = '';
+        messageInput.focus();
+        
+        // 2. Indicador de carga
+        showTyping();
+        
+        try {
+            // Preparar historial en el formato que pueda aceptar /developer/chat
+            // según ejemplo: { message, history?: [] }
+            // Nosotros usaremos history como array de {role, content}
+            const payload = {
+                message: userMessage,
+                history: conversationHistory.slice(0, -1)   // excluir el último mensaje (que es el user recién agregado)
+            };
+            
+            const response = await fetch(API_CHAT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': API_KEY
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            hideTyping();
+            
+            if (!response.ok) {
+                let errorDetail = `Error ${response.status}`;
+                try {
+                    const errData = await response.json();
+                    errorDetail = errData.error || errData.message || errorDetail;
+                } catch(e) {}
+                throw new Error(`API respondió: ${errorDetail}`);
+            }
+            
+            const data = await response.json();
+            // la respuesta esperada: { response: "texto del agente", ... }
+            const agentReply = data.response || data.message || "El agente respondió sin texto. 😶";
+            
+            // mostrar respuesta del asistente
+            addMessageToUI('assistant', agentReply);
+            
+        } catch (error) {
+            hideTyping();
+            console.error("Error en la llamada al agente:", error);
+            addMessageToUI('assistant', `⚠️ No pude conectarme al agente: ${error.message}. Verifica tu API Key o conectividad.`);
+        }
+    }
+    
+    // Eventos
+    sendBtn.addEventListener('click', () => {
+        const msg = messageInput.value.trim();
+        if (msg) sendMessageToAgent(msg);
+    });
+    
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const msg = messageInput.value.trim();
+            if (msg) sendMessageToAgent(msg);
+        }
+    });
+    
+    // (Opcional) saludar con información de estado desde /api/health 
+    async function fetchHealthStatus() {
+        try {
+            const res = await fetch('https://pivot-agent-psi.vercel.app/api/health');
+            const health = await res.json();
+            if (health && health.status === 'ok') {
+                // solo para info silenciosa, no saturar la UI
+                console.log(`✅ Agente online - versión ${health.version}`);
+            }
+        } catch(e) {}
+    }
+    fetchHealthStatus();
+</script>
+</body>
+</html>
