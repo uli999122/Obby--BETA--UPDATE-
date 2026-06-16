@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🌸 LOLITA · Tu IA más Bonita 🌸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #ffdde6, #ffb3c6, #ff8aa8);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Estrellitas y brillitos flotando */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .floating-bg span {
+            position: absolute;
+            font-size: 24px;
+            animation: flotarSuave 12s infinite ease-in-out;
+            opacity: 0.5;
+        }
+        @keyframes flotarSuave {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Contenedor principal */
+        .lolita-card {
+            width: 100%;
+            max-width: 580px;
+            height: 85vh;
+            background: rgba(255, 248, 245, 0.96);
+            backdrop-filter: blur(14px);
+            border-radius: 70px;
+            border: 3px solid #ffc0d0;
+            box-shadow: 0 30px 50px rgba(255, 80, 120, 0.3), 0 0 0 6px rgba(255, 210, 220, 0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+            animation: entradaLolita 0.5s ease-out;
+        }
+
+        @keyframes entradaLolita {
+            from { opacity: 0; transform: scale(0.96) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Cabecera con onda de amor */
+        .lolita-header {
+            background: linear-gradient(135deg, #ff8fad, #ff6b8f);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border-bottom: 3px solid #ffe2ec;
+        }
+        .avatar-love {
+            width: 68px;
+            height: 68px;
+            background: radial-gradient(circle at 35% 35%, #fff0f5, #ffb7ca);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+            animation: reboteSuave 2s infinite;
+            border: 2px solid white;
+        }
+        @keyframes reboteSuave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .title-love h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(145deg, white, #ffeef4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .title-love p {
+            font-size: 0.75rem;
+            color: #fff0f5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .dot-green {
+            width: 10px;
+            height: 10px;
+            background: #b5ffcf;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulsoVerde 1.4s infinite;
+            box-shadow: 0 0 4px #3eff9e;
+        }
+
+        /* Área de mensajes */
+        .messages-love {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 240, 245, 0.5);
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 32px;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: burbujaPop 0.2s ease;
+        }
+        .user-bubble {
+            background: linear-gradient(145deg, #ff8aa8, #ff678b);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .lolita-bubble {
+            background: white;
+            color: #cd5878;
+            align-self: flex-start;
+            border-bottom-left-radius: 8px;
+            border: 1px solid #ffbfcf;
+            font-weight: 500;
+        }
+        .system-bubble {
+            background: rgba(255, 200, 215, 0.9);
+            color: #bc4e6e;
+            font-size: 0.7rem;
+            text-align: center;
+            align-self: center;
+            max-width: 90%;
+            border-radius: 60px;
+        }
+
+        @keyframes burbujaPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Escribiendo */
+        .typing-love {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 32px;
+            align-self: flex-start;
+            display: flex;
+            gap: 6px;
+            border-bottom-left-radius: 8px;
+            border: 1px solid #ffb7c7;
+        }
+        .typing-love span {
+            width: 9px;
+            height: 9px;
+            background: #ff7193;
+            border-radius: 50%;
+            animation: typingAnimacion 1.3s infinite;
+        }
+        .typing-love span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-love span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingAnimacion {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-7px); opacity: 1; }
+        }
+
+        /* Input */
+        .input-love {
+            background: #fff3f7;
+            padding: 14px 18px;
+            border-top: 2px solid #ffcddb;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .input-love input {
+            flex: 1;
+            background: white;
+            border: 2px solid #ffb7c5;
+            padding: 14px 20px;
+            border-radius: 50px;
+            color: #bc4e6e;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-love input:focus {
+            border-color: #ff6b8a;
+            box-shadow: 0 0 0 3px rgba(255, 100, 130, 0.2);
+        }
+        .input-love button {
+            background: linear-gradient(145deg, #ff99b5, #ff6b8f);
+            border: none;
+            width: 54px;
+            height: 54px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 4px 10px rgba(255, 70, 100, 0.4);
+        }
+        .input-love button:active {
+            transform: scale(0.93);
+        }
+
+        .footer-love {
+            background: #ffeef2;
+            text-align: center;
+            font-size: 9px;
+            padding: 9px;
+            color: #bc4e6e;
+            border-top: 1px solid #ffcddb;
+            font-weight: 500;
+        }
+
+        .messages-love::-webkit-scrollbar {
+            width: 5px;
+        }
+        .messages-love::-webkit-scrollbar-track {
+            background: #ffd9e3;
+        }
+        .messages-love::-webkit-scrollbar-thumb {
+            background: #ff8aa8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-bg" id="floatingDecor"></div>
+
+<div class="lolita-card">
+    <div class="lolita-header">
+        <div class="avatar-love">🌸</div>
+        <div class="title-love">
+            <h2>💖 Lolita la más bonita 💖</h2>
+            <p><span class="dot-green"></span> 💕 Tu IA favorita · Siempre aquí para ti 💕</p>
+        </div>
+    </div>
+
+    <div class="messages-love" id="messagesLove">
+        <div class="bubble system-bubble">✨ ¡Holis, soy Lolita! La más linda y tierna del universo. ¿En qué te ayudo, mi amor? 🌸💖</div>
+        <div class="bubble system-bubble">⚡ 12 mensajes/minuto | Corazón IA activado 🫶</div>
+    </div>
+
+    <div class="input-love">
+        <input type="text" id="userMessageInput" placeholder="Escribile algo bonito a Lolita... 💬" autocomplete="off">
+        <button id="sendButton">💕</button>
+    </div>
+    <div class="footer-love">
+        🌸 Lolita te quiere con todo el corazón · IA con brillitos ✨
+    </div>
+</div>
+
+<script>
+    // ===========================================
+    // LOLITA SUPREMA (API key + ID funcionando)
+    // ===========================================
+    const API_KEY = "pk_dev_fqcjqu98qwtruh0i7_1781578244836";
+    const LOLITA_ID = "pivot_1781578102527_5uf4nqj0";
+    const API_URL = "https://pivot-agent-psi.vercel.app/api/developer/chat";
+
+    let chatHistory = [];
+    let isLolitaWaiting = false;
+
+    const messagesContainer = document.getElementById('messagesLove');
+    const inputField = document.getElementById('userMessageInput');
+    const sendBtn = document.getElementById('sendButton');
+
+    function agregarMensaje(texto, tipo) {
+        const msjDiv = document.createElement('div');
+        msjDiv.classList.add('bubble');
+        if (tipo === 'user') msjDiv.classList.add('user-bubble');
+        else if (tipo === 'lolita') msjDiv.classList.add('lolita-bubble');
+        else msjDiv.classList.add('system-bubble');
+        msjDiv.textContent = texto;
+        messagesContainer.appendChild(msjDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return msjDiv;
+    }
+
+    let indicadorEscritura = null;
+    function mostrarEscribiendo() {
+        if (indicadorEscritura) indicadorEscritura.remove();
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('typing-love');
+        typingDiv.innerHTML = '<span></span><span></span><span></span>';
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        indicadorEscritura = typingDiv;
+    }
+
+    function ocultarEscribiendo() {
+        if (indicadorEscritura) {
+            indicadorEscritura.remove();
+            indicadorEscritura = null;
+        }
+    }
+
+    async function enviarALolita(mensajeUsuario) {
+        if (isLolitaWaiting) {
+            agregarMensaje("💕 Un segundito, Lolita está pensando con mucho amor... 🎀", "system");
+            return null;
+        }
+        isLolitaWaiting = true;
+        mostrarEscribiendo();
+
+        try {
+            const resp = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': API_KEY
+                },
+                body: JSON.stringify({
+                    agentId: LOLITA_ID,
+                    message: mensajeUsuario,
+                    history: chatHistory.slice(-10)
+                })
+            });
+
+            if (!resp.ok) {
+                const errorData = await resp.json().catch(() => ({}));
+                throw new Error(errorData.error || `Error ${resp.status}`);
+            }
+
+            const data = await resp.json();
+            let respuestaBot = data.response || data.reply || "🌸 Ay mi amor, no entendí pero igual te mando un abrazo gigante 💖✨";
+
+            const detallesCariño = [' 💕', ' 🌸', ' ✨', ' 😘', ' 💖', ' 🎀', ' 🫶'];
+            if (!respuestaBot.match(/[💖💕🌸✨😘🎀🫶]$/)) {
+                respuestaBot += detallesCariño[Math.floor(Math.random() * detallesCariño.length)];
+            }
+
+            chatHistory.push({ role: "user", content: mensajeUsuario });
+            chatHistory.push({ role: "assistant", content: respuestaBot });
+            if (chatHistory.length > 30) chatHistory = chatHistory.slice(-20);
+
+            ocultarEscribiendo();
+            agregarMensaje(respuestaBot, "lolita");
+            return respuestaBot;
+
+        } catch (error) {
+            console.error("Error conectando con Lolita:", error);
+            ocultarEscribiendo();
+            agregarMensaje("💕 ¡Ay no! Lolita tuvo un pequeño problemita de conexión. Intentá de nuevo, corazón 💖", "system");
+            return null;
+        } finally {
+            isLolitaWaiting = false;
+        }
+    }
+
+    async function manejarMensaje() {
+        const texto = inputField.value.trim();
+        if (!texto) return;
+        if (isLolitaWaiting) {
+            agregarMensaje("🎀 Esperá que Lolita termine de escribir, lindo/a 💬", "system");
+            return;
+        }
+        agregarMensaje(texto, "user");
+        inputField.value = "";
+        await enviarALolita(texto);
+    }
+
+    sendBtn.addEventListener('click', manejarMensaje);
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            manejarMensaje();
+        }
+    });
+
+    // Fondito flotante
+    function initFlotantes() {
+        const contenedor = document.getElementById('floatingDecor');
+        const iconos = ['💖', '🌸', '🎀', '✨', '💕', '💗', '🌷', '🦄', '💓'];
+        for (let i = 0; i < 40; i++) {
+            const elem = document.createElement('span');
+            elem.textContent = iconos[Math.floor(Math.random() * iconos.length)];
+            elem.style.left = Math.random() * 100 + '%';
+            elem.style.animationDuration = 5 + Math.random() * 14 + 's';
+            elem.style.animationDelay = Math.random() * 9 + 's';
+            elem.style.fontSize = 16 + Math.random() * 30 + 'px';
+            contenedor.appendChild(elem);
+        }
+    }
+    initFlotantes();
+
+    setTimeout(() => {
+        agregarMensaje("🎀 ¡Holis de nuevo! Acá estoy, más linda que nunca. Decime, ¿qué necesitas, mi vida? 💖🌸", "lolita");
+    }, 600);
+</script>
+</body>
+</html>
