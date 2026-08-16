@@ -131,7 +131,7 @@
     <script>
         var API_BASE = "https://pivot-box.vercel.app";
         var FILE_CODE = "1786849938065-bczmpm";
-        var API_KEY = "pvt-onYuaynPTv3DJyL3x5G6BOi0";
+        var API_KEY = "pvt-8cDrj1yLLqhxBflFMCUHdDlj";
         
         var player = document.getElementById('pivotPlayer');
         var video = document.getElementById('videoPlayer');
@@ -275,7 +275,7 @@
                     video.src = proxyUrl;
                     videoTitle.textContent = data.name || 'Video';
                     
-                    statusText.textContent = 'Archivo: ' + data.name + ' | Tamaño: ' + (data.size/1024/1024).toFixed(2) + ' MB | Vistas: ' + data.stats.views + ' | Anuncios: ' + data.ads.count;
+                    statusText.textContent = 'Archivo: ' + data.name + ' | Tamaño: ' + (data.size/1024/1024).toFixed(2) + ' MB | Vistas: ' + data.stats.views + ' | Anuncios: ' + data.ads.count + ' | Ads: ' + data.ads.videos.length;
                     
                     video.addEventListener('loadedmetadata', function() {
                         statusText.textContent += ' | ✅ CARGADO';
