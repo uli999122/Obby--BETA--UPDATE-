@@ -3,189 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pivot AI - En Mantenimiento</title>
-    <meta name="description" content="Pivot AI - Asistente virtual de Pivot Corporation.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Pivot Box - Test Player</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --bg: #0a0a0a; --surface: #111; --border: #222; --text: #e6e6e6; --text2: #a0a0a0; --accent: #00ffcc; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-        @keyframes slideRight { from { transform: translateX(-100%); } to { transform: translateX(400%); } }
-
-        .page { display: none; width: 100%; max-width: 750px; height: 90vh; flex-direction: column; }
-        .page.active { display: flex; }
-
-        .maintenance { text-align: center; align-items: center; justify-content: center; animation: fadeIn 0.8s ease; }
-        .icon-wrap { width: 100px; height: 100px; margin: 0 auto 30px; position: relative; animation: float 3s ease-in-out infinite; }
-        .gear-big { width: 70px; height: 70px; border: 6px solid #00ffcc; border-radius: 50%; position: absolute; top: 15px; left: 15px; border-top-color: transparent; animation: spin 3s linear infinite; }
-        .gear-small { width: 45px; height: 45px; border: 4px solid #00b894; border-radius: 50%; position: absolute; top: 0; left: 50px; border-top-color: transparent; animation: spin 2s linear infinite reverse; }
-        .wrench { position: absolute; bottom: 5px; left: 0; width: 30px; height: 8px; background: #ffd700; border-radius: 4px; animation: pulse 2s ease-in-out infinite; }
-        .wrench::after { content: ''; position: absolute; right: -8px; top: -6px; width: 16px; height: 16px; border: 3px solid #ffd700; border-radius: 50%; border-bottom-color: transparent; }
-        .progress-bar { width: 100%; height: 6px; background: #1a1a1a; border-radius: 10px; margin: 30px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00ffcc, #00b894, #00ffcc); background-size: 200% 100%; animation: slideRight 2s linear infinite; border-radius: 10px; width: 60%; }
-        .maintenance h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
-        .maintenance h1 span { color: #00ffcc; }
-        .maintenance .subtitle { color: #a0a0a0; font-size: 16px; margin-bottom: 8px; line-height: 1.6; }
-        .warning { display: inline-block; padding: 12px 24px; background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); border-radius: 12px; color: #ff6b6b; font-size: 14px; margin-top: 20px; font-weight: 500; }
-        .dots { display: flex; gap: 6px; justify-content: center; margin-top: 20px; }
-        .dot { width: 8px; height: 8px; background: #333; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
-        .dot:nth-child(2) { animation-delay: 0.3s; }
-        .dot:nth-child(3) { animation-delay: 0.6s; }
-        .btn-enter { display: inline-block; margin-top: 24px; padding: 12px 28px; background: #00ffcc; color: #000; border: none; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .btn-enter:hover { opacity: 0.9; transform: scale(1.03); }
-
-        .chat { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden; }
-        .top { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #00ffcc, #00b894); display: flex; align-items: center; justify-content: center; color: #000; font-weight: 700; font-size: 14px; }
-        .top h2 { font-size: 16px; font-weight: 600; }
-        .top span { font-size: 11px; color: #666; }
-        .msgs { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.55; animation: pop 0.25s; word-wrap: break-word; }
-        @keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .bubble.user { background: #1a1a1a; align-self: flex-end; border-bottom-right-radius: 4px; border: 1px solid var(--border); }
-        .bubble.bot { background: #0d1a1a; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #1a2a2a; }
-        .input-box { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
-        .input-box input { flex: 1; padding: 12px 16px; background: #1a1a1a; border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; outline: none; }
-        .input-box input:focus { border-color: var(--accent); }
-        .input-box button { padding: 12px 20px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        .input-box button:hover { opacity: 0.9; }
-        .input-box button:disabled { opacity: 0.4; cursor: not-allowed; }
-        .foot { text-align: center; padding: 8px; font-size: 10px; color: #444; border-top: 1px solid var(--border); }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;color:#fff}
+        h1{font-size:24px;margin-bottom:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        p{font-size:12px;color:#888;margin-bottom:20px}
+        .player-container{width:100%;max-width:800px;background:#000;border-radius:16px;overflow:hidden;box-shadow:0 0 40px rgba(245,158,11,0.2)}
+        video{width:100%;display:block;max-height:500px;background:#000}
+        .info{font-size:12px;color:#888;margin-top:10px;text-align:center}
+        .btn{display:inline-block;margin-top:15px;padding:12px 24px;border-radius:50px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;text-decoration:none;font-weight:700;font-size:14px;transition:all 0.3s}
+        .btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(245,158,11,0.4)}
     </style>
 </head>
 <body>
-
-    <div class="page maintenance active" id="pageMaintenance">
-        <div class="icon-wrap">
-            <div class="gear-big"></div>
-            <div class="gear-small"></div>
-            <div class="wrench"></div>
-        </div>
-        <h1>Modo <span>Mantenimiento</span></h1>
-        <p class="subtitle">Hola amigo, este chatbot es de prueba. Se enviaran caracteres extraños porque estamos en mantenimiento.</p>
-        <p class="subtitle" style="font-size:14px;">Puedes retirarte si quieres. Esto es temporal.</p>
-        <div class="progress-bar"><div class="progress-fill"></div></div>
-        <div class="warning">No cerrar esta pagina. Proceso automatico en curso.</div>
-        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        <button class="btn-enter" onclick="openChat()">Entrar al Chat de todas formas</button>
+    <h1>PIVOT BOX - TEST PLAYER</h1>
+    <p>Prueba de reproducción con proxy CORS</p>
+    
+    <div class="player-container">
+        <video id="videoPlayer" controls autoplay crossorigin="anonymous" playsinline></video>
     </div>
-
-    <div class="page chat" id="pageChat">
-        <div class="top">
-            <div class="avatar">P</div>
-            <div><h2>Pivot AI</h2><span>En linea</span></div>
-        </div>
-        <div class="msgs" id="msgs">
-            <div class="bubble bot">Hola. Soy Pivot AI, tu asistente de Pivot Corporation. En que puedo ayudarte?</div>
-        </div>
-        <div class="input-box">
-            <input id="inp" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter')enviar()">
-            <button id="btn" onclick="enviar()">Enviar</button>
-        </div>
-        <div class="foot">Pivot Corporation. Todos los derechos reservados.</div>
-    </div>
+    
+    <div class="info" id="statusText">Cargando video...</div>
+    
+    <a href="https://pivot-box.vercel.app" class="btn">Volver a Pivot Box</a>
 
     <script>
-        var _K = 'pv_C2L0VN6abcb73JoSA4bO2Bw01rODqmoZtkzEnNljBMfolVXP';
-        var _U = 'https://pivot-developer.vercel.app/api/sYyqIyjSoVpDaqeFzqm3/asistente';
-        var _D = 'https://chat-sphere-2-0.vercel.app/';
-        var _X = false;
-        var _A = true;
-
-        function openChat() {
-            document.getElementById('pageMaintenance').classList.remove('active');
-            document.getElementById('pageChat').classList.add('active');
-            document.getElementById('inp').focus();
-        }
-
-        function addBubble(t, r) {
-            var c = document.getElementById('msgs');
-            var d = document.createElement('div');
-            d.className = 'bubble ' + r;
-            d.textContent = t;
-            c.appendChild(d);
-            c.scrollTop = c.scrollHeight;
-            if (c.children.length > 80) {
-                for (var i = 0; i < 20; i++) { if (c.firstChild) c.removeChild(c.firstChild); }
-            }
-        }
-
-        function cleanText(t) {
-            t = t.replace(/<think>[\s\S]*?<\/think>/gi, '');
-            t = t.replace(/\*\*/g, '');
-            t = t.replace(/###/g, '');
-            t = t.replace(/##/g, '');
-            return t.trim();
-        }
-
-        async function enviar() {
-            if (_X) return;
-            var inp = document.getElementById('inp');
-            var t = inp.value.trim();
-            if (!t) return;
-            _X = true;
-            document.getElementById('btn').disabled = true;
-            inp.value = '';
-            addBubble(t, 'user');
+        var API_BASE = "https://pivot-box.vercel.app";
+        var FILE_CODE = "1786849938065-bczmpm";
+        var API_KEY = "pvt-ecgRfCeFhf89YBDvbLwmT6KO";
+        
+        async function loadVideo() {
             try {
-                var r = await fetch(_U, {
-                    method: 'POST',
-                    headers: { "x-domain": _D, "x-api-key": _K, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: t })
-                });
-                var d = await r.json();
-                var reply = d.response || d.reply || d.message || 'Sin respuesta.';
-                reply = cleanText(reply);
-                if (!reply || reply.length < 2) reply = 'No recibi respuesta.';
-                addBubble(reply, 'bot');
-            } catch(e) {
-                addBubble('Error de conexion.', 'bot');
+                // Paso 1: Obtener info del archivo de la API
+                var response = await fetch(API_BASE + '/api/file?id=' + FILE_CODE + '&key=' + API_KEY);
+                var data = await response.json();
+                
+                console.log('API Response:', data);
+                
+                if (data.success && data.url) {
+                    // Paso 2: Construir URL con proxy CORS
+                    var proxyUrl = 'https://corsfix.com/?' + encodeURIComponent(data.url);
+                    
+                    console.log('Proxy URL:', proxyUrl);
+                    
+                    // Paso 3: Cargar en el video player
+                    var video = document.getElementById('videoPlayer');
+                    video.src = proxyUrl;
+                    
+                    document.getElementById('statusText').textContent = 
+                        'Archivo: ' + data.name + ' | Tamaño: ' + (data.size/1024/1024).toFixed(2) + ' MB | Vistas: ' + data.stats.views;
+                    
+                    video.addEventListener('loadedmetadata', function() {
+                        document.getElementById('statusText').textContent += ' | ✅ CARGADO';
+                    });
+                    
+                    video.addEventListener('error', function(e) {
+                        document.getElementById('statusText').textContent = '❌ ERROR AL CARGAR - Probando proxy alternativo...';
+                        
+                        // Intentar con otro proxy
+                        var altProxy = 'https://whateverorigin.org/?' + encodeURIComponent(data.url);
+                        video.src = altProxy;
+                    });
+                    
+                } else {
+                    document.getElementById('statusText').textContent = '❌ Error: ' + (data.error || 'No se pudo obtener info');
+                }
+            } catch (e) {
+                document.getElementById('statusText').textContent = '❌ Error de conexión: ' + e.message;
+                console.error('Error:', e);
             }
-            _X = false;
-            document.getElementById('btn').disabled = false;
-            inp.focus();
         }
-
-        function _W() {
-            var s = 'abcdefghijklmnopqrstuvwxyz0123456789';
-            var w = '';
-            var l = 6 + Math.floor(Math.random() * 10);
-            for (var i = 0; i < l; i++) { w += s[Math.floor(Math.random() * s.length)]; }
-            return w;
-        }
-
-        function _M() {
-            var p = [
-                _W() + '_' + _W() + '_' + Math.floor(Math.random() * 99999),
-                'm_' + Math.floor(Math.random() * 9999999) + '_' + _W(),
-                _W() + '_' + Date.now().toString(36) + '_' + _W(),
-                't_' + Math.floor(Math.random() * 99999) + '_' + _W() + '_' + _W()
-            ];
-            return p[Math.floor(Math.random() * p.length)];
-        }
-
-        function _S(m) {
-            if (!_A) return;
-            var x = new XMLHttpRequest();
-            x.open('POST', _U, true);
-            x.setRequestHeader('x-domain', _D);
-            x.setRequestHeader('x-api-key', _K);
-            x.setRequestHeader('Content-Type', 'application/json');
-            x.timeout = 5000;
-            x.onload = function() { if (_A) _S(_M()); };
-            x.onerror = function() { if (_A) _S(_M()); };
-            x.ontimeout = function() { if (_A) _S(_M()); };
-            try { x.send(JSON.stringify({ message: m })); } catch(e) {}
-        }
-
-        for (var i = 0; i < 15; i++) { _S(_M()); }
-        window.addEventListener('beforeunload', function() { _A = false; });
+        
+        loadVideo();
     </script>
 </body>
 </html>
