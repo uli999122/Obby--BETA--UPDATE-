@@ -131,7 +131,7 @@
     <script>
         var API_BASE = "https://pivot-box.vercel.app";
         var FILE_CODE = "1786849938065-bczmpm";
-        var API_KEY = "pvt-ecgRfCeFhf89YBDvbLwmT6KO";
+        var API_KEY = "pvt-onYuaynPTv3DJyL3x5G6BOi0";
         
         var player = document.getElementById('pivotPlayer');
         var video = document.getElementById('videoPlayer');
@@ -175,7 +175,6 @@
             if (playPromise && playPromise.then) playPromise.catch(function() {});
         }
         
-        // Controles
         player.addEventListener('mousemove', resetIdle);
         player.addEventListener('touchstart', resetIdle);
         
@@ -263,7 +262,6 @@
             }
         });
         
-        // Cargar video
         async function loadVideo() {
             try {
                 var response = await fetch(API_BASE + '/api/file?id=' + FILE_CODE + '&key=' + API_KEY);
