@@ -3,768 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANALISTO - Reproductor Premium</title>
+    <title>Chatbot DeepSeek Seguro</title>
     <style>
-        :root {
-            --bg: #000000;
-            --surface: #0a0a0a;
-            --surface2: #111111;
-            --text: #ffffff;
-            --text2: #888888;
-            --accent: #00f0ff;
-            --accent2: #ff00e5;
-            --gradient: linear-gradient(135deg, #00f0ff, #ff00e5);
-            --gradient2: linear-gradient(90deg, #00f0ff, #ff00e5, #00f0ff);
-            --neon: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            background: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text);
-            position: relative;
-            overflow: hidden;
+            align-items: center;
         }
-        
-        /* Fondo animado */
-        body::before {
-            content: '';
+
+        /* Modal para ingresar API Key */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05), transparent 70%);
-            animation: bgPulse 4s ease-in-out infinite;
-            pointer-events: none;
-        }
-        
-        @keyframes bgPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        /* Header ANALISTO */
-        .brand {
-            font-size: 32px;
-            font-weight: 900;
-            margin-bottom: 4px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-            animation: brandGlow 3s ease-in-out infinite;
-            text-transform: uppercase;
-        }
-        
-        @keyframes brandGlow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3)); }
-            50% { filter: drop-shadow(0 0 20px rgba(255, 0, 229, 0.5)); }
-        }
-        
-        .brand-subtitle {
-            font-size: 11px;
-            color: var(--text2);
-            margin-bottom: 25px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        
-        /* Contenedor del reproductor */
-        .player-container {
             width: 100%;
-            max-width: 900px;
-            background: linear-gradient(180deg, #0a0a0a, #000000);
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 100px rgba(0, 240, 255, 0.1), 0 25px 60px rgba(0, 0, 0, 0.9);
-            animation: playerIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
-        
-        @keyframes playerIn {
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal p {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal input:focus {
+            border-color: #667eea;
+        }
+
+        .modal button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .modal button:hover {
+            transform: scale(1.02);
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            width: 90%;
+            max-width: 600px;
+            height: 80vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
         }
-        
-        /* Video */
-        .video-wrapper {
-            position: relative;
-            background: #000;
+
+        .user-message {
+            background: #667eea;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
         }
-        
-        .video-wrapper video {
-            width: 100%;
-            display: block;
-            max-height: 550px;
-            object-fit: contain;
-            cursor: pointer;
+
+        .bot-message {
+            background: #f0f0f0;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
         }
-        
-        /* Overlay de reproducción */
-        .play-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            animation: playPulse 2s infinite;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-        
-        @keyframes playPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(255, 0, 229, 0.5); }
-        }
-        
-        .play-overlay:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background: rgba(0, 240, 255, 0.2);
-        }
-        
-        .play-overlay svg {
-            width: 35px;
-            height: 35px;
-            fill: white;
-            margin-left: 4px;
-        }
-        
-        .play-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: translate(-50%, -50%) scale(0.5);
-        }
-        
-        /* Gradientes superiores e inferiores */
-        .gradient-top {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent);
-            pointer-events: none;
-            z-index: 2;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .gradient-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 120px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-            pointer-events: none;
-            z-index: 2;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .player-container:not(.idle) .gradient-top,
-        .player-container:not(.idle) .gradient-bottom {
-            opacity: 1;
-        }
-        
-        /* Título del video */
-        .video-title {
-            position: absolute;
-            top: 20px;
-            left: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 5;
-            pointer-events: none;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-            transition: opacity 0.3s;
-            letter-spacing: 0.5px;
-        }
-        
-        .player-container.idle .video-title {
-            opacity: 0;
-        }
-        
-        /* Marca ANALISTO en el video */
-        .brand-overlay {
-            position: absolute;
-            bottom: 20px;
-            right: 25px;
-            font-size: 10px;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.5);
-            z-index: 5;
-            pointer-events: none;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: opacity 0.3s;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 4px 8px;
-            border-radius: 4px;
-            backdrop-filter: blur(5px);
-        }
-        
-        .player-container.idle .brand-overlay {
-            opacity: 0;
-        }
-        
-        /* Spinner de carga */
-        .spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(0, 240, 255, 0.1);
-            border-top: 3px solid var(--accent);
-            border-right: 3px solid var(--accent2);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 8;
+
+        .typing-indicator {
             display: none;
+            align-self: flex-start;
+            background: #f0f0f0;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
         }
-        
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        /* Controles */
-        .controls {
-            padding: 20px 25px;
-            position: relative;
-            z-index: 6;
-            transition: all 0.3s;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-        }
-        
-        .player-container.idle .controls {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        
-        /* Barra de progreso */
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            position: relative;
-            transition: height 0.2s;
-        }
-        
-        .progress-container:hover {
+
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
             height: 8px;
-        }
-        
-        .progress-bar {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background: var(--gradient);
-            background-size: 200% 100%;
-            animation: gradientMove 3s linear infinite;
-            border-radius: 10px;
-            width: 0%;
-            transition: width 0.1s;
-        }
-        
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        
-        .progress-knob {
-            position: absolute;
-            top: 50%;
-            width: 16px;
-            height: 16px;
-            background: var(--accent);
             border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.8);
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
+            background: #999;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
         }
-        
-        .progress-container:hover .progress-knob {
-            opacity: 1;
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
         }
-        
-        /* Fila de controles */
-        .controls-row {
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chat-input {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 20px;
+            background: #f8f9fa;
             gap: 10px;
         }
-        
-        .left-controls,
-        .right-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
         }
-        
-        /* Botones */
-        .btn {
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+
+        #user-input:focus {
+            border-color: #667eea;
+        }
+
+        #send-button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            transition: all 0.25s;
-        }
-        
-        .btn:hover {
-            background: rgba(0, 240, 255, 0.1);
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
-        }
-        
-        .btn:active {
-            transform: scale(0.9);
-        }
-        
-        .btn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-        
-        /* Tiempo */
-        .time-display {
-            font-size: 12px;
-            color: #cccccc;
-            min-width: 80px;
-            text-align: center;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Control de volumen */
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-        
-        .volume-slider {
-            width: 0;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: width 0.3s;
-        }
-        
-        .volume-control:hover .volume-slider {
-            width: 60px;
-        }
-        
-        .volume-fill {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 10px;
-            width: 100%;
-        }
-        
-        /* Botón de velocidad */
-        .speed-btn {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            background: rgba(0, 240, 255, 0.1);
-            padding: 8px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            transition: all 0.3s;
-            min-width: 40px;
-            text-align: center;
-        }
-        
-        .speed-btn:hover {
-            background: rgba(0, 240, 255, 0.2);
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-        }
-        
-        /* Info bar */
-        .info-bar {
-            font-size: 12px;
-            color: var(--text2);
-            margin-top: 20px;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Botón volver */
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 30px;
-            border-radius: 50px;
-            background: var(--gradient);
-            color: #000;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            transition: all 0.3s;
             border: none;
+            border-radius: 25px;
             cursor: pointer;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-size: 1em;
+            font-weight: bold;
+            transition: transform 0.2s;
         }
-        
-        .back-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.4);
+
+        #send-button:hover {
+            transform: scale(1.05);
+        }
+
+        #send-button:active {
+            transform: scale(0.95);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="brand">ANALISTO</div>
-    <p class="brand-subtitle">Reproductor Premium</p>
-    
-    <div class="player-container" id="playerContainer">
-        <div class="video-wrapper">
-            <video id="videoPlayer" crossorigin="anonymous" preload="auto" playsinline></video>
-            
-            <div class="gradient-top"></div>
-            <div class="gradient-bottom"></div>
-            
-            <div class="video-title" id="videoTitle">Cargando video...</div>
-            
-            <button class="play-overlay" id="playOverlayBtn">
-                <svg viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-            </button>
-            
-            <div class="spinner" id="loadingSpinner"></div>
-            
-            <div class="brand-overlay">ANALISTO</div>
-        </div>
-        
-        <div class="controls">
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-bar" id="progressBarFill"></div>
-                <div class="progress-knob" id="progressKnob"></div>
+    <!-- Modal para API Key -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2>🔐 Ingresa tu API Key</h2>
+            <div class="warning">
+                ⚠️ Tu API key se mantiene solo en tu navegador y no se guarda en ningún servidor
             </div>
-            
-            <div class="controls-row">
-                <div class="left-controls">
-                    <button class="btn" id="playPauseBtn">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                    </button>
-                    
-                    <div class="volume-control">
-                        <button class="btn" id="volumeBtn">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M3 9v6h4l5 5V4L7 9H3z"/>
-                            </svg>
-                        </button>
-                        <div class="volume-slider" id="volumeSlider">
-                            <div class="volume-fill" id="volumeFill"></div>
-                        </div>
-                    </div>
-                    
-                    <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
-                </div>
-                
-                <div class="right-controls">
-                    <button class="speed-btn" id="speedButton">1x</button>
-                    <button class="btn" id="fullscreenBtn">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            <p>Obtén tu API key gratuita en:<br><strong>platform.deepseek.com</strong></p>
+            <input 
+                type="password" 
+                id="api-key-input" 
+                placeholder="sk-..."
+                autocomplete="off"
+            >
+            <button onclick="setApiKey()">Conectar</button>
         </div>
     </div>
-    
-    <div class="info-bar" id="infoBar">Iniciando reproductor ANALISTO...</div>
-    
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <span>🤖 Chatbot DeepSeek</span>
+            <button class="logout-btn" onclick="logout()">Cambiar Key</button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                ¡Hola! Estoy conectado con DeepSeek. ¿En qué puedo ayudarte?
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typing-indicator">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>
+
+        <div class="chat-input">
+            <input 
+                type="text" 
+                id="user-input" 
+                placeholder="Escribe tu mensaje..."
+                autocomplete="off"
+            >
+            <button id="send-button">Enviar</button>
+        </div>
+    </div>
+
     <script>
-        // ==================== CONFIGURACIÓN ====================
-        const API_BASE = "https://pivot-box.vercel.app";
-        const FILE_CODE = "1786907197361-k0itcd";
-        const API_KEY = "pvt-8cDrj1yLLqhxBflFMCUHdDlj";
+        const API_URL = 'https://api.deepseek.com/v1/chat/completions';
         
-        // ==================== ELEMENTOS DEL DOM ====================
-        const playerContainer = document.getElementById('playerContainer');
-        const videoPlayer = document.getElementById('videoPlayer');
-        const playOverlayBtn = document.getElementById('playOverlayBtn');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const volumeBtn = document.getElementById('volumeBtn');
-        const speedButton = document.getElementById('speedButton');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressBarFill = document.getElementById('progressBarFill');
-        const progressKnob = document.getElementById('progressKnob');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeFill = document.getElementById('volumeFill');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const videoTitle = document.getElementById('videoTitle');
-        const infoBar = document.getElementById('infoBar');
-        
-        // ==================== VARIABLES ====================
-        let idleTimeout;
-        const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
-        let currentSpeedIndex = 2;
-        
-        // ==================== FUNCIONES AUXILIARES ====================
-        function formatTime(seconds) {
-            if (isNaN(seconds) || seconds < 0) return "0:00";
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return minutes + ":" + (secs < 10 ? "0" : "") + secs;
-        }
-        
-        function resetIdleTimeout() {
-            playerContainer.classList.remove('idle');
-            clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(() => {
-                if (!videoPlayer.paused) {
-                    playerContainer.classList.add('idle');
-                }
-            }, 3000);
-        }
-        
-        function togglePlay() {
-            if (videoPlayer.paused) {
-                const playPromise = videoPlayer.play();
-                if (playPromise && playPromise.then) {
-                    playPromise.catch(() => {});
-                }
-            } else {
-                videoPlayer.pause();
+        let apiKey = '';
+        let conversationHistory = [
+            {
+                role: "system",
+                content: "Eres un asistente útil y amigable."
             }
-        }
-        
-        // ==================== EVENT LISTENERS ====================
-        playerContainer.addEventListener('mousemove', resetIdleTimeout);
-        playerContainer.addEventListener('touchstart', resetIdleTimeout);
-        playerContainer.addEventListener('mouseleave', () => {
-            if (!videoPlayer.paused) {
-                playerContainer.classList.add('idle');
-            }
-        });
-        
-        // Eventos del video
-        videoPlayer.addEventListener('play', () => {
-            playOverlayBtn.classList.add('hidden');
-            playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-            resetIdleTimeout();
-            infoBar.textContent = 'Reproduciendo video...';
-        });
-        
-        videoPlayer.addEventListener('pause', () => {
-            playOverlayBtn.classList.remove('hidden');
-            playPauseBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-            playerContainer.classList.remove('idle');
-            infoBar.textContent = 'Video pausado';
-        });
-        
-        videoPlayer.addEventListener('waiting', () => {
-            loadingSpinner.style.display = 'block';
-            infoBar.textContent = 'Cargando video...';
-        });
-        
-        videoPlayer.addEventListener('canplay', () => {
-            loadingSpinner.style.display = 'none';
-            infoBar.textContent = 'Listo para reproducir';
-        });
-        
-        videoPlayer.addEventListener('timeupdate', () => {
-            const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100 || 0;
-            progressBarFill.style.width = progress + '%';
-            progressKnob.style.left = progress + '%';
-            timeDisplay.textContent = formatTime(videoPlayer.currentTime) + ' / ' + formatTime(videoPlayer.duration);
-        });
-        
-        // Clicks
-        playOverlayBtn.addEventListener('click', togglePlay);
-        videoPlayer.addEventListener('click', togglePlay);
-        playPauseBtn.addEventListener('click', togglePlay);
-        
-        // Barra de progreso
-        progressContainer.addEventListener('click', (e) => {
-            const rect = progressContainer.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const percentage = clickX / rect.width;
-            videoPlayer.currentTime = percentage * videoPlayer.duration;
-        });
-        
-        // Control de volumen
-        volumeBtn.addEventListener('click', () => {
-            videoPlayer.muted = !videoPlayer.muted;
-            updateVolumeUI();
-        });
-        
-        volumeSlider.addEventListener('click', (e) => {
-            const rect = volumeSlider.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-            videoPlayer.volume = percentage;
-            videoPlayer.muted = false;
-            updateVolumeUI();
-        });
-        
-        function updateVolumeUI() {
-            const volume = videoPlayer.muted ? 0 : videoPlayer.volume;
-            volumeFill.style.width = (volume * 100) + '%';
+        ];
+
+        // Elementos del DOM
+        const modalOverlay = document.getElementById('modal-overlay');
+        const chatContainer = document.getElementById('chat-container');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        function setApiKey() {
+            const key = apiKeyInput.value.trim();
             
-            // Actualizar icono de volumen
-            if (volume === 0 || videoPlayer.muted) {
-                volumeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
-            } else if (volume < 0.5) {
-                volumeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>';
-            } else {
-                volumeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+            if (!key) {
+                alert('Por favor ingresa tu API key');
+                return;
             }
-        }
-        
-        // Control de velocidad
-        speedButton.addEventListener('click', () => {
-            currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
-            videoPlayer.playbackRate = speeds[currentSpeedIndex];
-            speedButton.textContent = speeds[currentSpeedIndex] + 'x';
-        });
-        
-        // Pantalla completa
-        fullscreenBtn.addEventListener('click', () => {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                playerContainer.requestFullscreen();
+            
+            if (!key.startsWith('sk-')) {
+                alert('La API key debe comenzar con "sk-"');
+                return;
             }
-        });
-        
-        // Atajos de teclado
-        document.addEventListener('keydown', (e) => {
-            switch(e.key.toLowerCase()) {
-                case ' ':
-                case 'k':
-                    e.preventDefault();
-                    togglePlay();
-                    break;
-                case 'arrowleft':
-                    e.preventDefault();
-                    videoPlayer.currentTime -= 5;
-                    break;
-                case 'arrowright':
-                    e.preventDefault();
-                    videoPlayer.currentTime += 5;
-                    break;
-                case 'arrowup':
-                    e.preventDefault();
-                    videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
-                    videoPlayer.muted = false;
-                    updateVolumeUI();
-                    break;
-                case 'arrowdown':
-                    e.preventDefault();
-                    videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
-                    videoPlayer.muted = false;
-                    updateVolumeUI();
-                    break;
-                case 'm':
-                    e.preventDefault();
-                    videoPlayer.muted = !videoPlayer.muted;
-                    updateVolumeUI();
-                    break;
-                case 'f':
-                    e.preventDefault();
-                    if (document.fullscreenElement) {
-                        document.exitFullscreen();
-                    } else {
-                        playerContainer.requestFullscreen();
-                    }
-                    break;
-            }
-        });
-        
-        // ==================== CARGA DEL VIDEO ====================
-        async function loadVideo() {
-            try {
-                infoBar.textContent = 'ANALISTO - Obteniendo información del video...';
-                
-                const response = await fetch(API_BASE + '/api/file?id=' + FILE_CODE + '&key=' + API_KEY);
-                const data = await response.json();
-                
-                if (data.success && data.url) {
-                    const streamUrl = API_BASE + '/api/file?action=stream&url=' + encodeURIComponent(data.url) + '&key=' + API_KEY;
-                    videoPlayer.src = streamUrl;
-                    videoTitle.textContent = data.name || 'Video ANALISTO';
-                    infoBar.textContent = 'ANALISTO - Video cargado correctamente';
-                    
-                    videoPlayer.addEventListener('loadedmetadata', () => {
-                        infoBar.textContent = 'ANALISTO - Duración: ' + formatTime(videoPlayer.duration);
-                    });
-                    
-                    videoPlayer.addEventListener('error', () => {
-                        infoBar.textContent = 'ANALISTO - Error al reproducir el video';
-                    });
-                } else {
-                    infoBar.textContent = 'ANALISTO - Error: ' + (data.error || 'No se pudo obtener información');
+            
+            apiKey = key;
+            apiKeyInput.value = '';
+            
+            // Mostrar chat y ocultar modal
+            modalOverlay.style.display = 'none';
+            chatContainer.style.display = 'flex';
+            
+            // Limpiar historial
+            conversationHistory = [
+                {
+                    role: "system",
+                    content: "Eres un asistente útil y amigable."
                 }
+            ];
+            
+            // Limpiar mensajes anteriores
+            chatMessages.innerHTML = `
+                <div class="message bot-message">
+                    ¡Conexión exitosa! Soy un chatbot con DeepSeek. ¿En qué puedo ayudarte?
+                </div>
+            `;
+            
+            userInput.focus();
+        }
+
+        function logout() {
+            apiKey = '';
+            conversationHistory = [
+                {
+                    role: "system",
+                    content: "Eres un asistente útil y amigable."
+                }
+            ];
+            
+            // Mostrar modal y ocultar chat
+            modalOverlay.style.display = 'flex';
+            chatContainer.style.display = 'none';
+            
+            // Limpiar mensajes
+            chatMessages.innerHTML = `
+                <div class="message bot-message">
+                    ¡Hola! Estoy conectado con DeepSeek. ¿En qué puedo ayudarte?
+                </div>
+            `;
+            
+            apiKeyInput.focus();
+        }
+
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.style.display = 'none';
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+            
+            if (!apiKey) {
+                alert('Por favor ingresa tu API key primero');
+                logout();
+                return;
+            }
+            
+            // Limpiar input
+            userInput.value = '';
+            
+            // Agregar mensaje del usuario
+            addMessage(message, true);
+            conversationHistory.push({
+                role: "user",
+                content: message
+            });
+            
+            // Mostrar indicador de escritura
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: conversationHistory,
+                        temperature: 0.7,
+                        max_tokens: 1000
+                    })
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('API key inválida');
+                    } else if (response.status === 429) {
+                        throw new Error('Límite de solicitudes alcanzado');
+                    } else {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                }
+                
+                const data = await response.json();
+                const botResponse = data.choices[0].message.content;
+                
+                // Agregar respuesta del bot
+                addMessage(botResponse, false);
+                conversationHistory.push({
+                    role: "assistant",
+                    content: botResponse
+                });
+                
             } catch (error) {
-                infoBar.textContent = 'ANALISTO - Error de conexión';
                 console.error('Error:', error);
+                
+                let errorMsg = 'Lo siento, hubo un error. ';
+                
+                if (error.message.includes('API key inválida')) {
+                    errorMsg += 'Tu API key no es válida. Por favor verifica e intenta de nuevo.';
+                    // Mostrar modal para nueva key
+                    setTimeout(() => logout(), 2000);
+                } else if (error.message.includes('Límite')) {
+                    errorMsg += 'Has alcanzado el límite de solicitudes. Intenta más tarde.';
+                } else {
+                    errorMsg += 'Por favor intenta de nuevo.';
+                }
+                
+                addMessage(errorMsg, false);
+            } finally {
+                hideTypingIndicator();
             }
         }
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
         
-        // ==================== INICIALIZACIÓN ====================
-        updateVolumeUI();
-        loadVideo();
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        apiKeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                setApiKey();
+            }
+        });
+        
+        // Focus en el input de API key al cargar
+        apiKeyInput.focus();
     </script>
 </body>
 </html>
