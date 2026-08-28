@@ -19,44 +19,32 @@
             --border: rgba(255,255,255,0.06);
             --border-hover: rgba(255,255,255,0.12);
             --border-active: rgba(139,92,246,0.3);
-            
             --purple-300: #c4b5fd;
             --purple-400: #a78bfa;
             --purple-500: #8b5cf6;
             --purple-600: #7c3aed;
-            --purple-700: #6d28d9;
             --pink-400: #f472b6;
             --pink-500: #ec4899;
-            --pink-600: #db2777;
-            
             --text-primary: #fafafa;
             --text-secondary: #a1a1aa;
             --text-tertiary: #71717a;
-            --text-disabled: #52525b;
-            
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
             --info: #3b82f6;
-            
             --radius-xs: 6px;
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-xl: 32px;
             --radius-full: 9999px;
-            
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
             --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
             --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
             --shadow-purple: 0 0 40px rgba(139,92,246,0.15);
-            --shadow-pink: 0 0 40px rgba(236,72,153,0.15);
-            
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            
             --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
@@ -112,17 +100,18 @@
             width: min(100%, 480px);
             position: relative;
             z-index: 1;
+            animation: slideUp 0.6s var(--transition-spring);
         }
         
         .logo-area {
             text-align: center;
-            margin-bottom: clamp(24px, 5vw, 40px);
+            margin-bottom: clamp(24px, 5vw, 32px);
         }
         
         .logo-wrapper {
             display: inline-block;
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         
         .logo-wrapper::after {
@@ -135,16 +124,8 @@
             z-index: -1;
         }
         
-        .logo {
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
         .app-name {
-            font-size: clamp(28px, 6vw, 36px);
+            font-size: clamp(24px, 5vw, 32px);
             font-weight: 900;
             letter-spacing: -0.02em;
             background: linear-gradient(135deg, var(--purple-400), var(--pink-500), var(--purple-500));
@@ -175,10 +156,9 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius-xl);
-            padding: clamp(24px, 5vw, 36px);
+            padding: clamp(24px, 5vw, 32px);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
-            animation: slideUp 0.6s var(--transition-spring);
             transition: border-color var(--transition-base);
         }
         
@@ -188,7 +168,7 @@
         
         .card-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
         
         .card-title {
@@ -252,7 +232,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            margin: 28px 0;
+            margin: 24px 0;
         }
         
         .divider::before,
@@ -270,10 +250,75 @@
             text-transform: uppercase;
         }
         
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple-500), var(--pink-500));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-weight: 700;
+        }
+        
+        .badge-success {
+            background: rgba(16,185,129,0.08);
+            color: var(--success);
+            border: 1px solid rgba(16,185,129,0.15);
+        }
+        
+        .badge-pending {
+            background: rgba(245,158,11,0.08);
+            color: var(--warning);
+            border: 1px solid rgba(245,158,11,0.15);
+        }
+        
         .features {
             display: grid;
             gap: 12px;
-            margin-top: 24px;
+            margin-top: 20px;
         }
         
         .feature-item {
@@ -335,65 +380,17 @@
             color: var(--text-tertiary);
         }
         
-        .user-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px;
+        .token-box {
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            margin-bottom: 20px;
-        }
-        
-        .user-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple-500), var(--pink-500));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 16px;
-            color: white;
-        }
-        
-        .user-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .user-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .user-email {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: var(--radius-full);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
-            font-weight: 700;
-        }
-        
-        .badge-verified {
-            background: rgba(16,185,129,0.08);
-            color: var(--success);
-            border: 1px solid rgba(16,185,129,0.15);
-        }
-        
-        .badge-pending {
-            background: rgba(245,158,11,0.08);
-            color: var(--warning);
-            border: 1px solid rgba(245,158,11,0.15);
+            color: var(--purple-400);
+            word-break: break-all;
+            line-height: 1.6;
+            margin-top: 8px;
         }
         
         .spinner {
@@ -438,42 +435,74 @@
 
 <div class="container" id="app"></div>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAdrDgfFGLihD07Hhz4YvTGzMTyRBaL4U8",
-    authDomain: "pivot-innovations.firebaseapp.com",
-    projectId: "pivot-innovations",
-    storageBucket: "pivot-innovations.firebasestorage.app",
-    messagingSenderId: "769985407451",
-    appId: "1:769985407451:web:723059afb01db2ba79dffe"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
+<script>
 const PIVOT_AUTH_URL = 'https://pivot-auth-two.vercel.app/auth.html';
-const APP_ID = 'pivot_app_ufebjh1i7t';
+const APP_ID = 'pivot_app_7qf08lzy6ws';
+const API_KEY = 'pivot_key_mkvd83sit';
 
 const ICONS = {
-    logo: `<svg width="64" height="64" viewBox="0 0 48 48" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="48" y2="48"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="4" y="4" width="40" height="40" rx="12" fill="url(#lg)" opacity="0.15"/><rect x="8" y="8" width="32" height="32" rx="8" fill="url(#lg)"/><path d="M24 16C19.6 16 16 19.6 16 24C16 28.4 19.6 32 24 32C28.4 32 32 28.4 32 24C32 19.6 28.4 16 24 16ZM24 28C21.8 28 20 26.2 20 24C20 21.8 21.8 20 24 20C26.2 20 28 21.8 28 24C28 26.2 26.2 28 24 28Z" fill="white"/><path d="M24 22L26 24L24 26L22 24L24 22Z" fill="white" opacity="0.5"/></svg>`,
-    shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2L3 7V12C3 17.5 6.5 22.5 12 23C17.5 22.5 21 17.5 21 12V7L12 2Z"/><path d="M9 12L11 14L15 10"/></svg>`,
-    check: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-    lock: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7C7 4.2 9.2 2 12 2C14.8 2 17 4.2 17 7V11"/></svg>`,
-    logout: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H9"/><path d="M16 17L21 12L16 7"/><path d="M21 12H9"/></svg>`,
-    pivot: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L20 7V17L12 22L4 17V7L12 2Z"/><path d="M12 22V12"/><path d="M20 7L12 12L4 7"/></svg>`
+    logo: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="48" y2="48"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="4" y="4" width="40" height="40" rx="12" fill="url(#lg)" opacity="0.15"/><rect x="8" y="8" width="32" height="32" rx="8" fill="url(#lg)"/><path d="M24 16C19.6 16 16 19.6 16 24C16 28.4 19.6 32 24 32C28.4 32 32 28.4 32 24C32 19.6 28.4 16 24 16ZM24 28C21.8 28 20 26.2 20 24C20 21.8 21.8 20 24 20C26.2 20 28 21.8 28 24C28 26.2 26.2 28 24 28Z" fill="white"/><path d="M24 22L26 24L24 26L22 24L24 22Z" fill="white" opacity="0.5"/></svg>`,
+    shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7V12C3 17.5 6.5 22.5 12 23C17.5 22.5 21 17.5 21 12V7L12 2Z"/><path d="M9 12L11 14L15 10"/></svg>`,
+    check: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    lock: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7C7 4.2 9.2 2 12 2C14.8 2 17 4.2 17 7V11"/></svg>`,
+    logout: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H9"/><path d="M16 17L21 12L16 7"/><path d="M21 12H9"/></svg>`,
+    pivot: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L20 7V17L12 22L4 17V7L12 2Z"/><path d="M12 22V12"/><path d="M20 7L12 12L4 7"/></svg>`
 };
+
+function checkCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+    
+    if (error) {
+        renderError(error);
+        return true;
+    }
+    
+    if (code) {
+        renderProcessing();
+        exchangeCodeForToken(code);
+        return true;
+    }
+    
+    return false;
+}
+
+async function exchangeCodeForToken(code) {
+    try {
+        const response = await fetch('https://pivot-auth-two.vercel.app/api/oauth?action=token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                code: code,
+                clientId: APP_ID,
+                clientSecret: API_KEY
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.access_token) {
+            const userResponse = await fetch('https://pivot-auth-two.vercel.app/api/oauth?action=userinfo', {
+                headers: { 'Authorization': `Bearer ${data.access_token}` }
+            });
+            
+            const userData = await userResponse.json();
+            
+            renderAuthenticated(userData.user, data);
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+            renderError(data.error || 'Failed to exchange code');
+        }
+    } catch (error) {
+        renderError('Failed to communicate with Pivot Auth');
+    }
+}
 
 function renderLogin() {
     document.getElementById('app').innerHTML = `
         <div class="logo-area">
-            <div class="logo-wrapper">
-                <div class="logo">${ICONS.logo}</div>
-            </div>
+            <div class="logo-wrapper">${ICONS.logo}</div>
             <div class="app-name">PIVOT AUTH DEMO</div>
             <div class="app-badge">${ICONS.pivot} ENTERPRISE PLATFORM</div>
         </div>
@@ -519,32 +548,63 @@ function renderLogin() {
     `;
 }
 
-function renderAuthenticated(user, profile) {
-    const initials = (profile?.displayName || user.email || 'U').charAt(0).toUpperCase();
-    const has2FA = profile?.twoFAEnabled || false;
+function renderProcessing() {
+    document.getElementById('app').innerHTML = `
+        <div class="logo-area">
+            <div class="logo-wrapper">${ICONS.logo}</div>
+            <div class="app-name">PIVOT AUTH DEMO</div>
+        </div>
+        <div class="card">
+            <div style="text-align:center;padding:20px;">
+                <div class="spinner" style="margin:0 auto 16px;width:24px;height:24px;color:var(--purple-400);"></div>
+                <p style="color:var(--text-secondary);font-size:13px;">Processing authorization...</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderError(message) {
+    document.getElementById('app').innerHTML = `
+        <div class="logo-area">
+            <div class="logo-wrapper">${ICONS.logo}</div>
+            <div class="app-name">PIVOT AUTH DEMO</div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="color:var(--error);">Authorization Failed</div>
+                <div class="card-subtitle">${message}</div>
+            </div>
+            <button class="btn btn-pivot" onclick="window.location.href=window.location.pathname">
+                Try Again
+            </button>
+        </div>
+    `;
+}
+
+function renderAuthenticated(user, tokenData) {
+    const initials = (user?.name || user?.email || 'U').charAt(0).toUpperCase();
+    const has2FA = user?.twoFAEnabled || false;
     
     document.getElementById('app').innerHTML = `
         <div class="logo-area">
-            <div class="logo-wrapper">
-                <div class="logo">${ICONS.logo}</div>
-            </div>
+            <div class="logo-wrapper">${ICONS.logo}</div>
             <div class="app-name">PIVOT AUTH DEMO</div>
-            <div class="app-badge">${ICONS.pivot} AUTHENTICATED</div>
+            <div class="app-badge">${ICONS.check} AUTHENTICATED</div>
         </div>
         
         <div class="card">
             <div class="card-header">
                 <div class="card-title">Welcome Back!</div>
-                <div class="card-subtitle">You are securely authenticated</div>
+                <div class="card-subtitle">You are securely authenticated via Pivot Auth</div>
             </div>
             
             <div class="user-card">
                 <div class="user-avatar">${initials}</div>
                 <div class="user-info">
-                    <div class="user-name">${profile?.displayName || 'User'}</div>
-                    <div class="user-email">${user.email}</div>
+                    <div class="user-name">${user?.name || user?.email || 'User'}</div>
+                    <div class="user-email">${user?.email || ''}</div>
                 </div>
-                <span class="badge ${has2FA ? 'badge-verified' : 'badge-pending'}">
+                <span class="badge ${has2FA ? 'badge-success' : 'badge-pending'}">
                     ${has2FA ? ICONS.check + ' 2FA Active' : ICONS.shield + ' 2FA Pending'}
                 </span>
             </div>
@@ -556,7 +616,7 @@ function renderAuthenticated(user, profile) {
                     </div>
                     <div class="feature-info">
                         <div class="feature-name">Authentication Successful</div>
-                        <div class="feature-desc">Your identity has been verified</div>
+                        <div class="feature-desc">Your identity has been verified by Pivot Auth</div>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -565,12 +625,19 @@ function renderAuthenticated(user, profile) {
                     </div>
                     <div class="feature-info">
                         <div class="feature-name">Enterprise Security</div>
-                        <div class="feature-desc">${has2FA ? '2FA protection is active' : 'Configure 2FA for enhanced security'}</div>
+                        <div class="feature-desc">${has2FA ? '2FA protection is active' : '2FA protection available'}</div>
                     </div>
                 </div>
             </div>
             
-            <button class="btn btn-outline" onclick="handleLogout()" style="margin-top: 20px;">
+            ${tokenData?.access_token ? `
+                <div style="margin-top:16px;">
+                    <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">ACCESS TOKEN</div>
+                    <div class="token-box">${tokenData.access_token.substring(0, 50)}...</div>
+                </div>
+            ` : ''}
+            
+            <button class="btn btn-outline" onclick="handleLogout()" style="margin-top:20px;">
                 ${ICONS.logout} Sign Out
             </button>
         </div>
@@ -581,24 +648,13 @@ window.loginWithPivot = function() {
     window.location.href = `${PIVOT_AUTH_URL}?appId=${APP_ID}`;
 };
 
-window.handleLogout = async function() {
-    await signOut(auth);
-    renderLogin();
+window.handleLogout = function() {
+    window.location.href = window.location.pathname;
 };
 
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        try {
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            const profile = userDoc.exists ? userDoc.data() : null;
-            renderAuthenticated(user, profile);
-        } catch (error) {
-            renderAuthenticated(user, null);
-        }
-    } else {
-        renderLogin();
-    }
-});
+if (!checkCallback()) {
+    renderLogin();
+}
 </script>
 
 </body>
